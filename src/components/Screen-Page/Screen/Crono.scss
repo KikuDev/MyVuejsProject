@@ -1,0 +1,97 @@
+#crono {
+		position: absolute;
+		//top: 560px;
+		//left: 485px;
+		z-index: 4;
+		&.cronoWalkingLeft {
+			width: 48px;
+			height: 73px;
+			animation: walkToCenter 7.2s forwards ease-out;
+			background-image: url('../../assets/sprites/crono/crono-w-left.png');
+			@keyframes walkToCenter {
+				0% {
+					left: 1070px;
+					top: 580px;
+				}
+				100% {
+					left: 486px;
+					top: 580px;
+				}
+			}
+			&.halfTurned {
+				transition: 0.1s;
+				transform: skewY(25deg);
+			}
+		}
+		&.cronoImmobileBack {
+			left: 495px;
+			top: 580px;
+			background-image: url('../../assets/sprites/crono/crono-back.gif');
+			background-position: 0 !important;
+			width: 31px;
+			height: 65px;
+			&:hover {
+				background-image: url('../../assets/sprites/crono/crono-laugh.gif');
+			}
+		}
+		&.casting-spell {
+			animation: cronoGoUp 3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			left: 486px;
+			top: 568px;
+			background-image: url('../../assets/sprites/crono/crono-spell-back.png');
+			background-position-y: 0px !important;
+			width: 52px;
+			height: 76px;
+			transform: scale(0.9);
+
+			@keyframes cronoGoUp {
+				0% {
+					top: 568px;
+				}
+				100% {
+					top: -100px;
+				}
+			}
+		}
+		&.marle-casting {
+			animation: marleGoDown 3s forwards ease-out;
+			left: 498px;
+			top: -100px;
+			background-image: url('../../assets/sprites/marle/marle-spell-back.png');
+			background-position-y: 0px !important;
+			width: 24px;
+			height: 101px;
+
+			@keyframes marleGoDown {
+				0% {
+					top: -100px;
+				}
+				100% {
+					top: 545px;
+				}
+			}
+		}
+		&.marle-back {
+			background-image: url('../../assets/sprites/marle/marle-spell-down.gif');
+			background-position: 0 !important;
+			left: 498px;
+			top: 545px;
+			width: 24px;
+			height: 101px;
+		}
+		&.marle-immobile-back {
+			background-image: url('../../assets/sprites/marle/marle-immobile-back.gif');
+			background-position: 0 !important;
+			left: 498px;
+			top: 582px;
+			width: 24px;
+			height: 64px;
+			&:hover {
+				background-image: url('../../assets/sprites/marle/marle-butt.gif');
+				height: 57px;
+				left: 488px;
+				top: 592px;
+				width: 40px;
+			}
+		}
+	}

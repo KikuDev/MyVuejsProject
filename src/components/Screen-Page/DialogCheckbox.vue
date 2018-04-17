@@ -1,7 +1,13 @@
 
 <template>
-	<div id="DialogInput">
-		<input placeholder="Enter your name" v-model="inputValue"/>
+	<div id="DialogCheckbox">
+		<input class="hidden" type="checkbox" id="checkbox" v-model="checked" />
+		<div class="checkbox-man">
+			<div id="man-checkbox" class="checkbox" v-on:click="checked = 'man'"></div>
+		</div>
+		<div class="checkbox-woman">
+			<div id="woman-checkbox" class="checkbox" v-on:click="checked = 'woman'"></div>
+		</div>
 		<button class="DialogInput__validate btn--disabled" v-on:click="validateName" disabled="disabled">OK</button>
 	</div>
 </template>
@@ -10,28 +16,13 @@
 /* eslint-disable */
 
 export default {
-	name: 'DialogInput',
+	name: 'DialogCheckbox',
 	data() {
 		return {
 			txt: this.$store.getters.dialog,
 			inputValue: this.value,
+			checked: 'man',
 		};
-	},
-	watch: {
-		inputValue(val) {
-			const dialogInputButton = document.getElementsByClassName('DialogInput__validate')[0];
-			if (this.inputValue.split('')[0] === ' ') {
-				this.inputValue = '';
-			}
-			if (this.inputValue && this.inputValue.length > 3) {
-				dialogInputButton.removeAttribute("disabled");
-				dialogInputButton.classList.remove('btn--disabled');
-			} else {
-				dialogInputButton.setAttribute('disabled', 'disabled');
-				dialogInputButton.classList.add('btn--disabled');
-			}
-			this.$emit('input', val);
-		}
 	},
 	methods: {
 		validateName() {
@@ -44,20 +35,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-	#DialogInput {
+	#DialogCheckbox {
 		animation: appear 0.5s ease-out forwards;
 		bottom: 0px;
 		display: flex;
 		justify-content: center;;
 		position: absolute;
 		z-index: 1;
-		input {
-			border: none;
-			box-shadow: 0px 0px 2px 1px;
-			color: #333;
-			height: 25px;
-			text-align: center;
-		}
 		@keyframes appear {
 			0% {
 				height: 0px;
@@ -88,5 +72,26 @@ export default {
 				margin-top: 5px;
 			}
 		}
+
+		#man-checkbox, #woman-checkbox {
+			background-color: #fff;
+			background-size: contain;
+			border: 1px solid #000;
+			margin-right: 5px;
+			margin-top: 4px;
+			height: 27px;
+			width: 27px;
+		}
+
+		#man-checkbox {
+			background-image: url('../../assets/man-symbol.png');
+		}
+
+		#woman-checkbox {
+			background-image: url('../../assets/woman-symbol.png');
+		}
+	}
+	.hidden {
+		display: none;
 	}
 </style>

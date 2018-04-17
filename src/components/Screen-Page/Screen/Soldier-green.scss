@@ -1,0 +1,40 @@
+#soldier-green {
+	&.walking {
+		animation: soldierRight 3.1s forwards ease-out, greenVisible 1.5s forwards linear;
+		background-image: url('../../assets/sprites/soldier/soldier-green-w-left.png');
+		height: 70px;
+		opacity: 0;
+		position: absolute;
+		top: 500px;
+		width: 36px;
+		z-index: 2;
+
+		@keyframes soldierRight {
+			from {
+				right: -50px;
+			}
+			to {
+				right: 415px;
+			}
+		}
+
+		@keyframes greenVisible {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+	}
+	&.front {
+		background-image: url('../../assets/sprites/soldier/soldier-green-front.png');
+		background-position: 0 !important;
+		height: 70px;
+		right: 415px;
+		position: absolute;
+		top: 500px;
+		width: 32px;
+		z-index: 2;
+	}
+}

@@ -40,11 +40,17 @@ export default new Vuex.Store({
 				'My name is Gregory, I\'m 31 and I\'m a front-end developper.',
 				'What\'s your name?',
 				'Nice to meet you ',
+				'This appearance doesn\'t suit you... Hmm... Wait!',
+				'It\'s better!',
+				'So... Who do you want to talk with?',
+				'Nice to meet you ',
+				'So... Who do you want to talk with?',
 			],
 		},
 		instructions: {
 			input: 'Press Enter',
 			tap: 'Tap on screen',
+			tapOrInput: 'Tap or Press Enter',
 		},
 	},
 	getters: {

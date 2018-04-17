@@ -11,7 +11,7 @@
 		&.chancellorWalkingFront {
 			animation: chancellorTop 4s forwards ease-out;
 			animation-delay: 6s;
-			background-image: url('../assets/sprites/chancellor/chancellor-w-front.png');
+			background-image: url('../../assets/sprites/chancellor/chancellor-w-front.png');
 			@keyframes chancellorTop {
 				from {
 					top: 400px;

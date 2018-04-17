@@ -1,0 +1,43 @@
+#soldier-red {
+	&.walking {
+		animation: soldierRedLeft 3.1s forwards ease-out, redVisible 1.5s forwards linear;
+		background-image: url('../../assets/sprites/soldier/soldier-red-w-right.png');
+		height: 70px;
+		opacity: 0;
+		position: absolute;
+		top: 500px;
+		width: 36px;
+		z-index: 2;
+
+		@keyframes soldierRedLeft {
+			from {
+				left: -50px;
+			}
+			to {
+				left: 420px;
+			}
+		}
+
+		@keyframes redVisible {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+	}
+	&.front {
+		background-image: url('../../assets/sprites/soldier/soldier-red-front.png');
+		background-position: 0 !important;
+		height: 70px;
+		left: 420px;
+		position: absolute;
+		top: 500px;
+		width: 32px;
+		z-index: 2;
+	}
+	&.hidden {
+		display: none;
+	}
+}

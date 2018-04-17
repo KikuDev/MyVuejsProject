@@ -1,0 +1,15 @@
+#judge {
+	background-image: url('../../assets/sprites/judge/Judge.gif');
+	height: 56px;
+	left: 493px;
+	position: absolute;
+	top: 422px;
+	width: 40px;
+	z-index: 2;
+	&.gavel {
+		background-image: url('../../assets/sprites/judge/judge-gavel.png');
+	}
+	&.speak {
+		background-image: url('../../assets/sprites/judge/judge-speak.png');
+	}
+}

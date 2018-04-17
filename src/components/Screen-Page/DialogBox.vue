@@ -1,10 +1,11 @@
 
 <template>
 	<div id="DialogBox" class="hidden">
-		<img class="DialogBox__background" src="../assets/dialogBox.png" alt="dialog" />
+		<img class="DialogBox__background" src="../../assets/dialogBox.png" alt="dialog" />
 		<div class="DialogBox__text"></div>
 		<div class="DialogBox__instructions off"></div>
-		<DialogInput v-if="displayInput" v-model="name" v-on:validateName="reinitializeDialog"/>
+		<DialogInput v-if="displayInput" v-model="name" v-on:genderDefined="check" v-on:validateName="reinitializeDialog"/>
+		<DialogCheckbox v-if="displayCheckbox" v-model="gender" v-on:validateName="reinitializeDialog"/>
 	</div>
 </template>
 
@@ -12,11 +13,14 @@
 /* eslint-disable */
 import Check from './checkResolution.js';
 import DialogInput from './DialogInput';
+import DialogCheckbox from './DialogCheckbox';
+import axios from 'axios';
 
 export default {
 	name: 'DialogBox',
 	components: {
-		DialogInput
+		DialogInput,
+		DialogCheckbox,
 	},
 	data() {
 		return {
@@ -25,11 +29,16 @@ export default {
 			judge: this.$store.state.judge,
 			step: 0,
 			displayInput: false,
+			displayCheckbox: false,
 			name: '',
+			isGenderDefined: false,
+			gender: '',
 		};
 	},
 	mounted() {
 		let that = this;
+
+		this.getLanguage();
 
 		setTimeout(function() {
 			that.displayDialogBox();
@@ -37,6 +46,29 @@ export default {
 		}, 11000);
 	},
 	methods: {
+		getLanguage() {
+			axios.get(`http://ip-api.com/json`)
+				.then(function(response) {
+					console.log(response);
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
+			
+			console.log(window.navigator.language);
+		},
+		check(value) {
+			if (!value) {
+				this.isGenderDefined = false;
+				this.gender = 'undetermined';
+			} else {
+				this.isGenderDefined = true;
+				this.gender = value;
+				if (value === 'male') {
+					this.step = this.step + 4;
+				}
+			}
+		},
 		judgeSpeak(isSpeaking) {
 			const DialogBox = document.getElementById('DialogBox');
 			const judgeNPC = document.getElementById('judge');
@@ -60,7 +92,6 @@ export default {
 			}
 		},
 		displayText(state = 'on', step = this.step) {
-			console.log(state);
 			const DialogBoxTxt = document.getElementsByClassName('DialogBox__text')[0];
 			let that = this;
 			state === 'off' ? DialogBoxTxt.innerHTML = '' : displaySpeech();
@@ -79,6 +110,20 @@ export default {
 							setTimeout(function() {
 								that.displayInput = true;
 							}, 500);
+						} else if (step === 4 & that.isGenderDefined) {
+							setTimeout(function() {
+								that.$emit('changeCharacter');
+								setTimeout(function() {
+									that.reinitializeDialog();
+								}, 7800);
+							}, 500);
+						} else if (step === 5 & !that.isGenderDefined) {
+							setTimeout(function() {
+								that.displayCheckbox = true;
+							}, 500);
+						} else if (step === 6 || step === 8) {
+							console.log('youpiii');
+							that.$emit('introEnded');
 						} else {
 							that.displayInstructions();
 						}
@@ -97,15 +142,21 @@ export default {
 			state === 'off' ? DialogBoxInst.classList.add('off'): showInstructions();
 
 			function showInstructions(state) {
-				Check() === 'desktop' ? DialogBoxInst.innerText = that.instructions.input : DialogBoxInst.innerText = that.instructions.tap;
+				console.log(Check());
+				Check() === 'desktop' ? DialogBoxInst.innerText = that.instructions.input : Check() === 'mobile' ? DialogBoxInst.innerText = that.instructions.tap : DialogBoxInst.innerText = that.instructions.tapOrInput;
 				DialogBoxInst.classList.remove('off');
 				that.listenUserInput();
 			}
 		},
 		listenUserInput() {
 			let that = this;
-			Check() === 'desktop' ? manageKey() : manageClick();
+			Check() === 'desktop' ? manageKey() : Check() === 'mobile' ? manageClick() : manageBoth();
 			
+			function manageBoth() {
+				manageKey();
+				manageClick();
+			}
+
 			function manageKey() {
 				let keyPressed = function (event) {
 					if (event.keyCode === 13) {
