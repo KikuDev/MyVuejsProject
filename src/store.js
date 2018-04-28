@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
+		screenMounted: false,
 		chancellor: {
 			move: {
 				walkingFront: {
@@ -46,11 +47,21 @@ export default new Vuex.Store({
 				'Nice to meet you ',
 				'So... Who do you want to talk with?',
 			],
+			blue: [
+				'Watch a movie?',
+			],
+			red: [
+				'Play with maths?',
+			],
+			green: [
+				'Contact me?',
+			],
 		},
 		instructions: {
 			input: 'Press Enter',
 			tap: 'Tap on screen',
 			tapOrInput: 'Tap or Press Enter',
+			select: 'Select a character',
 		},
 	},
 	getters: {

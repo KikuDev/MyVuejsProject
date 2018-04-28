@@ -33,6 +33,7 @@ export default {
 			name: '',
 			isGenderDefined: false,
 			gender: '',
+			soldierSelected: '',
 		};
 	},
 	mounted() {
@@ -97,7 +98,14 @@ export default {
 			state === 'off' ? DialogBoxTxt.innerHTML = '' : displaySpeech();
 
 			function displaySpeech() {
-				let greetings = that.txt.intro;
+				let greetings = '';
+				if (that.soldierSelected.length < 2) {
+					greetings = that.txt.intro;
+				} else {
+					greetings = that.txt[that.soldierSelected];
+				}
+				console.log(greetings);
+				console.log(step);
 				let greetingHello = greetings[step].split('');
 				let counter = 0
 				let timer = setInterval(function () {
@@ -122,8 +130,10 @@ export default {
 								that.displayCheckbox = true;
 							}, 500);
 						} else if (step === 6 || step === 8) {
-							console.log('youpiii');
 							that.$emit('introEnded');
+							setTimeout(() => {
+								that.displayInstructions('select');
+							}, 3000);
 						} else {
 							that.displayInstructions();
 						}
@@ -136,44 +146,55 @@ export default {
 			}
 		},
 		displayInstructions(state = 'on') {
-			console.log(state);
-			const DialogBoxInst = document.getElementsByClassName('DialogBox__instructions')[0];
-			let that = this;
-			state === 'off' ? DialogBoxInst.classList.add('off'): showInstructions();
+			if (this.soldierSelected.length > 0) {
+				return;
+			} else {
+				console.log(state);
+				const DialogBoxInst = document.getElementsByClassName('DialogBox__instructions')[0];
+				let that = this;
+				state === 'off' ? DialogBoxInst.classList.add('off'): showInstructions(state);
 
-			function showInstructions(state) {
-				console.log(Check());
-				Check() === 'desktop' ? DialogBoxInst.innerText = that.instructions.input : Check() === 'mobile' ? DialogBoxInst.innerText = that.instructions.tap : DialogBoxInst.innerText = that.instructions.tapOrInput;
-				DialogBoxInst.classList.remove('off');
-				that.listenUserInput();
+				function showInstructions(state) {
+					console.log(state);
+					if (state !== 'select') {
+						Check() === 'desktop' ? DialogBoxInst.innerText = that.instructions.input : Check() === 'mobile' ? DialogBoxInst.innerText = that.instructions.tap : DialogBoxInst.innerText = that.instructions.tapOrInput;
+						DialogBoxInst.classList.remove('off');
+						that.listenUserInput();
+					} else {
+						DialogBoxInst.innerText = that.instructions.select;
+						DialogBoxInst.classList.remove('off');
+					}
+				}
 			}
 		},
 		listenUserInput() {
 			let that = this;
-			Check() === 'desktop' ? manageKey() : Check() === 'mobile' ? manageClick() : manageBoth();
+			Check() === 'desktop' ? document.addEventListener('keydown', this.keyPressed) : Check() === 'mobile' ? document.addEventListener('click', this.clicked) : manageBoth();
 			
 			function manageBoth() {
-				manageKey();
-				manageClick();
+				document.addEventListener('keydown', this.keyPressed)
+				document.addEventListener('click', this.clicked);
 			}
-
-			function manageKey() {
-				let keyPressed = function (event) {
-					if (event.keyCode === 13) {
-						console.log('enter pressed!');
-						that.reinitializeDialog();
-						document.removeEventListener('keydown', keyPressed);
-					}
-				}
-				document.addEventListener('keydown', keyPressed);
+		},
+		keyPressed(ev) {
+			console.log(ev);
+			if (ev.keyCode === 13) {
+				this.reinitializeDialog();
+				document.removeEventListener('keydown', this.keyPressed);
 			}
-			function manageClick() {
-				let clicked = function (event) {
-					that.reinitializeDialog();
-					document.removeEventListener('click', clicked);
-				}
-				document.addEventListener('click', clicked);
-			}
+		},
+		clicked() {
+			this.reinitializeDialog();
+			document.removeEventListener('click', this.clicked);
+		},
+		removeEventsListeners() {
+			document.removeEventListener('click', this.clicked);
+			document.removeEventListener('keydown', this.keyPressed);
+		},
+		displaySoldierChoice(soldier) {
+			console.log(soldier);
+			this.soldierSelected = soldier;
+			this.reinitializeDialog();
 		},
 		reinitializeDialog() {
 			let that = this;
@@ -181,7 +202,11 @@ export default {
 			this.displayText('off');
 			this.displayInstructions('off');
 			this.displayDialogBox('off');
-			this.step++;
+			if (this.soldierSelected.length > 0) {
+				this.step = 0;
+			} else {
+				this.step++;
+			}
 
 			setTimeout(function() {
 				that.nextEvent();

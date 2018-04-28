@@ -1,21 +1,21 @@
 
 <template>
 	<div>
-		<router-link to="/" class="button" v-on:click.native="destroyComponent">BACK</router-link>
+		<router-link to="/" class="button">BACK</router-link>
 		<input type="checkbox" id="switch" checked>
-		<label for="switch" class="switch-label">Turn </label>
+		<label for="switch" class="switch-label" style="display:none;">Turn </label>
 		<div class="container">
-			<DialogBox v-on:introEnded="displayGuards" v-on:changeCharacter="displayFemale"/>
+			<DialogBox v-if="dialog" v-on:introEnded="displayGuards" v-on:changeCharacter="displayFemale"/>
 			<div class="hello screen">
 				<img src="../../assets/background.jpg" alt="background" />
 				<canvas id="canvas"></canvas>
 				<div id="flash"></div>
 				<div id="judge"></div>
 				<div id="crono" :class="crono.name"></div>
-				<div id="chancellor" :class="chancellor.name"></div>
-				<div id="soldier-blue"></div>
-				<div id="soldier-red"></div>
-				<div id="soldier-green"></div>
+				<div id="chancellor" class="soldiers" :class="chancellor.name"></div>
+				<div id="soldier-blue" class="soldiers" v-on:click="proposition('blue')"></div>
+				<div id="soldier-red" class="soldiers" v-on:click="proposition('red')"></div>
+				<div id="soldier-green" class="soldiers" v-on:click="proposition('green')"></div>
 			</div>
 			<div class="overlay">AV-1</div>
 		</div>
@@ -36,6 +36,7 @@ export default {
 			msg: '',
 			chancellor: this.$store.getters.chancellor.move.walkingFront,
 			crono: this.$store.getters.crono.move.walkingLeft,
+			dialog: true,
 		};
 	},
 	mounted() {
@@ -49,6 +50,8 @@ export default {
 		canvas.width = 1024;
 		canvas.height = 768;
 
+		this.$store.state.screenMounted = true;
+
 		cronoWalkingLeft.play();
 		setTimeout(function() {
 			cronoWalkingLeft.toEnd();
@@ -59,7 +62,7 @@ export default {
 					cronoWalkingLeft.destroy();
 				}, 100);
 			}, 500);
-		}, 7000);
+		}, 6900);
 
 
 		setTimeout(function() {
@@ -136,11 +139,32 @@ export default {
 				}, 2900);
 			}, 1500);
 		},
-		destroyComponent() {
-			console.log('destroyyyyy');
-			this.$destroy();
-		},
-	}
+		proposition(soldier) {
+			const soldiers = document.getElementsByClassName('soldiers');
+
+			for (const element of soldiers) {
+				element.classList.remove('selected');
+			}
+			document.getElementById('soldier-' + soldier).classList.add('selected');
+			this.$children[1].displaySoldierChoice(soldier);
+		} ,
+	},
+	beforeRouteLeave(to, from, next) {
+		const answer = window.confirm('Are you sure?');
+		let that = this;
+		if (answer) {
+			document.getElementsByClassName('switch-label')[0].click();
+			this.dialog = false;
+			this.$store.state.screenMounted = false;
+			console.log(this.$children[1]);
+			this.$children[1].removeEventsListeners();
+			setTimeout(() => {
+				next();
+			}, 1000);
+		} else {
+			next(false);
+		}
+	},
 };
 </script>
 

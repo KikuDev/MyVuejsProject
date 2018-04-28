@@ -1,6 +1,70 @@
 <template>
 	<div id="Homepage">
 		<span class="letters"></span>
+		<div class="projects">
+			<div class="projects__professional">
+				<div class="project">
+					<div class="project__title">
+						Apollo / Pearle
+					</div>
+					<div class="project__description">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+						nisi ut aliquip ex ea commodo consequat.
+					</div>
+					<div class="project__img">
+						<img src="../assets/logos/apollo-logo.svg" alt="project logo" />
+						<img src="../assets/logos/pearle-logo.svg" alt="project logo" />
+					</div>
+				</div>
+				<div class="project">
+					<div class="project__title">
+						Les Gourbaindises
+					</div>
+					<div class="project__description">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+						nisi ut aliquip ex ea commodo consequat.
+					</div>
+					<div class="project__img">
+						<img src="../assets/logos/gourbaindises-logo.png" alt="project logo" />
+					</div>
+				</div>
+				<div class="project">
+					<div class="project__title">
+						Casavox
+					</div>
+					<div class="project__description">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+						nisi ut aliquip ex ea commodo consequat.
+					</div>
+					<div class="project__img">
+						<img src="../assets/logos/casavox-logo.png" alt="project logo" />
+					</div>
+				</div>
+			</div>
+			<!--
+			<div class="projects__personal">
+				<div class="new-mourvies">
+					<div class="project__title">
+						titre
+					</div>
+					<div class="project__description">
+						description
+					</div>
+					<div class="project__img">
+						<img src="../assets/logos/apollo-logo.jpg" alt="project logo" />
+					</div>
+					<div class="project__link">
+						lien
+					</div>
+				</div>
+			</div> -->
+		</div>
 		<router-link to="experience" class="button">Change Experience</router-link>
 	</div>
 </template>
@@ -78,6 +142,30 @@ export default {
 							color: #519cff;
 							opacity: 1;
 						}
+					}
+				}
+			}
+		}
+		.projects__professional {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			padding: 20px;
+			.project {
+				box-shadow: 0px 0px 6px -2px skyblue;
+				margin-bottom: 10px;
+				&__title {
+					color: #fff;
+					background-color: #519cff;
+					text-align: center;
+					padding: 10px 0;
+				}
+				&__description {
+					padding: 10px 15px;
+				}
+				&__img {
+					img {
+						width: 100%;
 					}
 				}
 			}
