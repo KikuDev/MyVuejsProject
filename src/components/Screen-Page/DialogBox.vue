@@ -6,6 +6,7 @@
 		<div class="DialogBox__instructions off"></div>
 		<DialogInput v-if="displayInput" v-model="name" v-on:genderDefined="check" v-on:validateName="reinitializeDialog"/>
 		<DialogCheckbox v-if="displayCheckbox" v-model="gender" v-on:validateName="reinitializeDialog"/>
+		<video v-if="videoPlay" id="video" width="100%" height="100%" autoplay preload controls type="video/mp4" src="" style="background:black; position: absolute; z-index: 4;"></video>
 	</div>
 </template>
 
@@ -34,6 +35,7 @@ export default {
 			isGenderDefined: false,
 			gender: '',
 			soldierSelected: '',
+			videoPlay: false,
 		};
 	},
 	mounted() {
@@ -194,7 +196,31 @@ export default {
 		displaySoldierChoice(soldier) {
 			console.log(soldier);
 			this.soldierSelected = soldier;
-			this.reinitializeDialog();
+			this.videoPlay = true;
+
+			axios.get('https://yts.am/api/v2/list_movies.json?quality=720p&query_term=revolver')
+				.then((res) => {
+					let torrent = res.data;
+					let infoHash = '';
+					for (var i = 0; i < torrent.data.movies[0].torrents.length; ++i) {
+						if (torrent.data.movies[0].torrents[i].quality == '720p') {
+							infoHash = torrent.data.movies[0].torrents[i].hash;
+							console.log(infoHash);
+						}
+					}
+					axios.get('http://localhost:8081/api/add/' + infoHash)
+						.then((data) => {
+							var video = 'http://localhost:8081/stream/' + infoHash + '.mp4';
+							document.getElementById('video').setAttribute('src', video);
+						})
+						.catch((error) => {
+							console.log(error);
+						});
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+			//this.reinitializeDialog();
 		},
 		reinitializeDialog() {
 			let that = this;
@@ -224,6 +250,10 @@ export default {
 <style scoped lang="scss">
 	$orange: #ffa600;
 	$black: #000;
+
+	video {
+		box-shadow: 0px 0px 10px 2px white;
+	}
 	#DialogBox {
 		align-items: center;
 		display: flex;

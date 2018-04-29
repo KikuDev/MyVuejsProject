@@ -63,7 +63,8 @@
 						lien
 					</div>
 				</div>
-			</div> -->
+			</div>
+			-->
 		</div>
 		<router-link to="experience" class="button">Change Experience</router-link>
 	</div>
@@ -80,7 +81,6 @@ export default {
 		}
 	},
 	mounted() {
-		console.log('test');
 		const lettersDiv = document.getElementsByClassName('letters')[0];
 		const arrName = this.fullname.split('');
 		let counter = 0
@@ -95,7 +95,7 @@ export default {
 		function addLetter(letter, index) {
 			lettersDiv.insertAdjacentHTML('beforeend', `<span class="letter-${index}">${letter}</span>`);
 		}
-	}
+	},
 };
 </script>
 
@@ -106,6 +106,9 @@ export default {
 	}
 	$letter-collection: ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12');
 
+	.projects {
+		height: calc(100% - 100px);
+	}
 	#Homepage {
 		align-self: flex-start;
 		border: 1px #519cff solid;
