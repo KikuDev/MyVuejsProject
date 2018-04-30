@@ -49,6 +49,7 @@ export default new Vuex.Store({
 			],
 			blue: [
 				'Watch a movie?',
+				'Which movie do you want to see?',
 			],
 			red: [
 				'Play with maths?',

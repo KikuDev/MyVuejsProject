@@ -1,14 +1,9 @@
 
 <template>
 	<div id="DialogCheckbox">
-		<input class="hidden" type="checkbox" id="checkbox" v-model="checked" />
 		<div class="checkbox-man">
-			<div id="man-checkbox" class="checkbox" v-on:click="checked = 'man'"></div>
+			<div id="confirm" class="checkbox" v-on:click="validateChoice">CONFIRM</div>
 		</div>
-		<div class="checkbox-woman">
-			<div id="woman-checkbox" class="checkbox" v-on:click="checked = 'woman'"></div>
-		</div>
-		<button class="DialogInput__validate btn--disabled" v-on:click="validateName" disabled="disabled">OK</button>
 	</div>
 </template>
 
@@ -17,17 +12,9 @@
 
 export default {
 	name: 'DialogCheckbox',
-	data() {
-		return {
-			txt: this.$store.getters.dialog,
-			inputValue: this.value,
-			checked: 'man',
-		};
-	},
 	methods: {
-		validateName() {
-			this.$store.state.dialog.intro[3] += `${this.inputValue} !`;
-			this.$emit('validateName');
+		validateChoice() {
+			this.$emit('validateChoice');
 		}
 	}
 };
@@ -73,22 +60,20 @@ export default {
 			}
 		}
 
-		#man-checkbox, #woman-checkbox {
+		#confirm {
+			align-items: center;
 			background-color: #fff;
 			background-size: contain;
 			border: 1px solid #000;
+			border-radius: 2px;
+			cursor: pointer;
+			display: flex;
+			font-size: 13px;
+			justify-content: center;
 			margin-right: 5px;
 			margin-top: 4px;
+			padding: 0 10px;
 			height: 27px;
-			width: 27px;
-		}
-
-		#man-checkbox {
-			background-image: url('../../assets/man-symbol.png');
-		}
-
-		#woman-checkbox {
-			background-image: url('../../assets/woman-symbol.png');
 		}
 	}
 	.hidden {

@@ -5,7 +5,7 @@
 		<div class="DialogBox__text"></div>
 		<div class="DialogBox__instructions off"></div>
 		<DialogInput v-if="displayInput" v-model="name" v-on:genderDefined="check" v-on:validateName="reinitializeDialog"/>
-		<DialogCheckbox v-if="displayCheckbox" v-model="gender" v-on:validateName="reinitializeDialog"/>
+		<DialogCheckbox v-if="displayCheckbox" v-on:validateChoice="confirmChoice"/>
 		<video v-if="videoPlay" id="video" width="100%" height="100%" autoplay preload controls type="video/mp4" src="" style="background:black; position: absolute; z-index: 4;"></video>
 	</div>
 </template>
@@ -33,8 +33,9 @@ export default {
 			displayCheckbox: false,
 			name: '',
 			isGenderDefined: false,
-			gender: '',
+			confirm: false,
 			soldierSelected: '',
+			otherSoldierClicked: false,
 			videoPlay: false,
 		};
 	},
@@ -101,13 +102,11 @@ export default {
 
 			function displaySpeech() {
 				let greetings = '';
-				if (that.soldierSelected.length < 2) {
+				if (that.soldierSelected.length < 1) {
 					greetings = that.txt.intro;
 				} else {
 					greetings = that.txt[that.soldierSelected];
 				}
-				console.log(greetings);
-				console.log(step);
 				let greetingHello = greetings[step].split('');
 				let counter = 0
 				let timer = setInterval(function () {
@@ -139,6 +138,15 @@ export default {
 						} else {
 							that.displayInstructions();
 						}
+
+						if (that.soldierSelected.length > 0 && step === 0) {
+							that.otherSoldierClicked = false;
+							that.displayCheckbox = true;
+							that.displayInstructions('off');
+						} else if (that.soldierSelected.length > 0 && step > 0) {
+							console.log('fuck you!');
+							that.displayInput = true;
+						}
 					}
 				}, 100);
 
@@ -148,7 +156,7 @@ export default {
 			}
 		},
 		displayInstructions(state = 'on') {
-			if (this.soldierSelected.length > 0) {
+			if (this.soldierSelected.length > 0 && state !== 'off') {
 				return;
 			} else {
 				console.log(state);
@@ -194,23 +202,36 @@ export default {
 			document.removeEventListener('keydown', this.keyPressed);
 		},
 		displaySoldierChoice(soldier) {
-			console.log(soldier);
+			if (soldier !== this.soldierSelected) {
+				this.otherSoldierClicked = true;
+			} else {
+				this.otherSoldierClicked = false;
+			}
 			this.soldierSelected = soldier;
+			this.reinitializeDialog();
+		},
+		confirmChoice() {
+			const that = this;
+			setTimeout(function() {
+				that.reinitializeDialog();
+			}, 500);
+		},
+		getMovie(title) {
 			this.videoPlay = true;
-
-			axios.get('https://yts.am/api/v2/list_movies.json?quality=720p&query_term=revolver')
+			const api = 'http://localhost:8081';
+			axios.get(`https://yts.am/api/v2/list_movies.json?quality=720p&query_term=${title}`)
 				.then((res) => {
 					let torrent = res.data;
 					let infoHash = '';
-					for (var i = 0; i < torrent.data.movies[0].torrents.length; ++i) {
+					for (let i = 0; i < torrent.data.movies[0].torrents.length; ++i) {
 						if (torrent.data.movies[0].torrents[i].quality == '720p') {
 							infoHash = torrent.data.movies[0].torrents[i].hash;
 							console.log(infoHash);
 						}
 					}
-					axios.get('http://localhost:8081/api/add/' + infoHash)
+					axios.get(`${api}/api/add/${infoHash}`)
 						.then((data) => {
-							var video = 'http://localhost:8081/stream/' + infoHash + '.mp4';
+							let video = `${api}/stream/${infoHash}.mp4`;
 							document.getElementById('video').setAttribute('src', video);
 						})
 						.catch((error) => {
@@ -220,15 +241,15 @@ export default {
 				.catch((error) => {
 					console.log(error);
 				});
-			//this.reinitializeDialog();
 		},
 		reinitializeDialog() {
 			let that = this;
 			this.displayInput = false;
+			this.displayCheckbox = false;
 			this.displayText('off');
 			this.displayInstructions('off');
 			this.displayDialogBox('off');
-			if (this.soldierSelected.length > 0) {
+			if (this.soldierSelected.length > 0 && this.otherSoldierClicked) {
 				this.step = 0;
 			} else {
 				this.step++;

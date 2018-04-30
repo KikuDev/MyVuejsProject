@@ -1,6 +1,7 @@
 <template>
 	<div id="Homepage">
 		<span class="letters"></span>
+		<!--
 		<div class="projects">
 			<div class="projects__professional">
 				<div class="project">
@@ -47,7 +48,6 @@
 					</div>
 				</div>
 			</div>
-			<!--
 			<div class="projects__personal">
 				<div class="new-mourvies">
 					<div class="project__title">
@@ -64,8 +64,8 @@
 					</div>
 				</div>
 			</div>
-			-->
 		</div>
+		-->
 		<router-link to="experience" class="button">Change Experience</router-link>
 	</div>
 </template>
