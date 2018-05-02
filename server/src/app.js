@@ -6,6 +6,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const webtorrent = require('webtorrent');
 const app = express();
+const sound = require(`${__dirname}/assets/sounds/wcronomarle.js`);
+
 
 app.use(morgan('combined'));
 app.use(bodyParser.json());
@@ -96,6 +98,10 @@ app.get('/api/delete/:infoHash', function(req, res, next) {
 	} catch (err) {
 		res.status(500).send('Error: ' + err.toString());
 	}
+});
+
+app.get('/getMidi', function(req, res, next) {
+	res.status(200).send(sound.cronoMarle);
 });
 
 app.listen(process.env.PORT || 8081);

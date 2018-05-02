@@ -141,9 +141,13 @@ export default {
 						}
 
 						if (that.soldierSelected.length > 0 && step === 0) {
-							that.otherSoldierClicked = false;
-							that.displayCheckbox = true;
-							that.displayInstructions('off');
+							if (that.soldierSelected === 'red' || that.soldierSelected === 'green') {
+								console.log('not ready');
+							} else {
+								that.otherSoldierClicked = false;
+								that.displayCheckbox = true;
+								that.displayInstructions('off');
+							}
 						} else if (that.soldierSelected.length > 0 && step > 0) {
 							console.log('fuck you!');
 							that.aim = 'movie';
@@ -220,6 +224,7 @@ export default {
 		},
 		getMovie(title) {
 			const that = this;
+			this.$emit('stopSound');
 			this.videoPlay = true;
 			const api = 'http://localhost:8081';
 			axios.get(`https://yts.am/api/v2/list_movies.json?quality=720p&query_term=${title}`)

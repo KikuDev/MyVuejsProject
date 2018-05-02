@@ -52,10 +52,10 @@ export default new Vuex.Store({
 				'Which movie do you want to see?',
 			],
 			red: [
-				'Play with maths?',
+				'I\'m not ready yet...',
 			],
 			green: [
-				'Contact me?',
+				'I\'m not ready yet...',
 			],
 		},
 		instructions: {

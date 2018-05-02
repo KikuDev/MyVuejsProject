@@ -66,7 +66,7 @@
 			</div>
 		</div>
 		-->
-		<router-link to="experience" class="button">Change Experience</router-link>
+		<router-link to="experience" class="button">Change Experience (with music)</router-link>
 	</div>
 </template>
 

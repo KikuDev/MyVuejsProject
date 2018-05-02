@@ -5,7 +5,7 @@
 		<input type="checkbox" id="switch" checked>
 		<label for="switch" class="switch-label" style="display:none;">Turn </label>
 		<div class="container">
-			<DialogBox v-if="dialog" v-on:introEnded="displayGuards" v-on:changeCharacter="displayFemale"/>
+			<DialogBox v-if="dialog" v-on:introEnded="displayGuards" v-on:changeCharacter="displayFemale" v-on:stopSound="fireSound('stop')"/>
 			<div class="hello screen">
 				<img src="../../assets/background.jpg" alt="background" />
 				<canvas id="canvas"></canvas>
@@ -25,6 +25,9 @@
 <script>
 /* eslint-disable */
 import DialogBox from './DialogBox';
+import axios from 'axios';
+import MidiPlayer from 'midi-player-js';
+import Soundfont from 'soundfont-player';
 
 export default {
 	name: 'Screen',
@@ -46,6 +49,8 @@ export default {
 		let canvas = document.getElementById("canvas");
 		let ctx = canvas.getContext("2d");
 		let that = this;
+
+		this.fireSound();
 
 		canvas.width = 1024;
 		canvas.height = 768;
@@ -76,6 +81,34 @@ export default {
 		}, 8000);
 	},
 	methods: {
+		fireSound(state) {
+			console.log(state);
+			axios.get('http://localhost:8081/getMidi').then(res => {
+				let AudioContext = window.AudioContext || window.webkitAudioContext || false; 
+				let ac = new AudioContext || new webkitAudioContext;
+				Soundfont.instrument(ac, 'https://raw.githubusercontent.com/gleitz/midi-js-soundfonts/gh-pages/MusyngKite/acoustic_grand_piano-mp3.js').then(function (instrument) {
+					let loadDataUri = function(dataUri) {
+						let Player = new MidiPlayer.Player(function(event) {
+							if (event.name == 'Note on' && event.velocity > 0) {
+								instrument.play(event.noteName, ac.currentTime, {gain:event.velocity/100});
+							}
+						});
+						if (state === 'stop') {
+							Player.stop();
+						} else {
+							Player.loadDataUri(dataUri);
+							Player.play();
+
+							Player.on('endOfFile', function() {
+								loadDataUri(res.data);
+							});
+						}
+					}
+					loadDataUri(res.data);
+
+				});
+			}).catch(err => console.log(err));
+		},
 		displayGuards() {
 			let that = this;
 			const greenSoldier = document.getElementById('soldier-green');
