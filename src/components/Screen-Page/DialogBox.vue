@@ -4,9 +4,9 @@
 		<img class="DialogBox__background" src="../../assets/dialogBox.png" alt="dialog" />
 		<div class="DialogBox__text"></div>
 		<div class="DialogBox__instructions off"></div>
-		<DialogInput v-if="displayInput" v-model="name" v-on:genderDefined="check" v-on:validateName="reinitializeDialog"/>
+		<DialogInput v-if="displayInput" :aim ="aim" v-model="name" v-on:genderDefined="check" v-on:movieSelected="getMovie" v-on:validateName="reinitializeDialog"/>
 		<DialogCheckbox v-if="displayCheckbox" v-on:validateChoice="confirmChoice"/>
-		<video v-if="videoPlay" id="video" width="100%" height="100%" autoplay preload controls type="video/mp4" src="" style="background:black; position: absolute; z-index: 4;"></video>
+		<video v-if="videoPlay" id="video" width="100%" height="120%" autoplay preload controls type="video/mp4" src="" style="background:black; position: absolute; z-index: 4;"></video>
 	</div>
 </template>
 
@@ -30,6 +30,7 @@ export default {
 			judge: this.$store.state.judge,
 			step: 0,
 			displayInput: false,
+			aim: 'name',
 			displayCheckbox: false,
 			name: '',
 			isGenderDefined: false,
@@ -145,6 +146,7 @@ export default {
 							that.displayInstructions('off');
 						} else if (that.soldierSelected.length > 0 && step > 0) {
 							console.log('fuck you!');
+							that.aim = 'movie';
 							that.displayInput = true;
 						}
 					}
@@ -217,6 +219,7 @@ export default {
 			}, 500);
 		},
 		getMovie(title) {
+			const that = this;
 			this.videoPlay = true;
 			const api = 'http://localhost:8081';
 			axios.get(`https://yts.am/api/v2/list_movies.json?quality=720p&query_term=${title}`)
@@ -229,8 +232,10 @@ export default {
 							console.log(infoHash);
 						}
 					}
+
 					axios.get(`${api}/api/add/${infoHash}`)
 						.then((data) => {
+							console.log(data);
 							let video = `${api}/stream/${infoHash}.mp4`;
 							document.getElementById('video').setAttribute('src', video);
 						})
@@ -273,7 +278,7 @@ export default {
 	$black: #000;
 
 	video {
-		box-shadow: 0px 0px 10px 2px white;
+		box-shadow: 0px 0px 90px 31px white
 	}
 	#DialogBox {
 		align-items: center;

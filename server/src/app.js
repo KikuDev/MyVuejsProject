@@ -36,13 +36,14 @@ app.get('/api/add/:infoHash', function(req, res) {
     try {
         client.add(torrent, function(torrent) {
             var file = getLargestFile(torrent);
-            torrent.swarm.on('upload', function() {
+            /*torrent.swarm.on('upload', function() {
                 if (torrent.length == torrent.downloaded) {
                     torrent.swarm.destroy();
                     torrent.discovery.stop();
                 }
-            });
-            res.status(200).send('Added torrent!');
+            });*/
+			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.end();
         });
     } catch (err) {
         res.status(500).send('Error: ' + err.toString());

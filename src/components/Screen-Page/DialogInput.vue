@@ -12,6 +12,7 @@ import axios from 'axios';
 
 export default {
 	name: 'DialogInput',
+	props: ['aim'],
 	data() {
 		return {
 			txt: this.$store.getters.dialog,
@@ -40,25 +41,29 @@ export default {
 		},
 		validateName() {
 			let that = this;
-			axios.get(`https://gender-api.com/get?name=${this.inputValue}&key=CEUzoTuDmNUVzUSbQr`)
-				.then(function (response) {
-					if ((response.data.gender === 'male' || response.data.gender === 'female') && response.data.accuracy > 70) {
-						if (response.data.gender === 'male') {
-							that.$store.state.dialog.intro[7] += `Mister ${that.inputValue} !`;
+			if (this.aim === 'name') {
+				axios.get(`https://gender-api.com/get?name=${this.inputValue}&key=CEUzoTuDmNUVzUSbQr`)
+					.then(function (response) {
+						if ((response.data.gender === 'male' || response.data.gender === 'female') && response.data.accuracy > 70) {
+							if (response.data.gender === 'male') {
+								that.$store.state.dialog.intro[7] += `Mister ${that.inputValue} !`;
+							} else {
+								that.$store.state.dialog.intro[3] += `Miss ${that.inputValue} !`;
+							}
+							that.$emit('validateName');
+							that.$emit('genderDefined', response.data.gender);
 						} else {
-							that.$store.state.dialog.intro[3] += `Miss ${that.inputValue} !`;
+							that.$emit('validateName');
+							that.$emit('genderDefined', false);
 						}
-						that.$emit('validateName');
-						that.$emit('genderDefined', response.data.gender);
-					} else {
-						that.$emit('validateName');
-						that.$emit('genderDefined', false);
-					}
-					console.log(response.data.gender);
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
+						console.log(response.data.gender);
+					})
+					.catch(function (error) {
+						console.log(error);
+					});
+			} else {
+				that.$emit('movieSelected', this.inputValue);
+			}
 		}
 	}
 };
